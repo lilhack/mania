@@ -34,7 +34,7 @@ class User(object):
 
     @property
     def email(self):
-        if self.provider == "AT&T":
+        if self.provider == "ATT":
             return self.phone + "@mms.att.net"
         elif self.provider == "Verizon":
             pass
