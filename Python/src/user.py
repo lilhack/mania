@@ -91,7 +91,7 @@ class User(object):
     def isClose(self, other):
         return abs(float(self.location[0]) - float(other.location[0])) < .001 \
          and abs(float(self.location[1]) - float(other.location[1])) < .001
-
+7
 
 if __name__ == '__main__':
     user1 = User("Angela", "/none", \
