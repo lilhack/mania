@@ -11,6 +11,16 @@ from botocore.exceptions import ClientError
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 table = dynamodb.Table('Users')
 
+def getUsersFromFile(file):
+    with open(file) as f:
+        data = json.load(f)
+    usrs = []
+    for p in data:
+        usr = User(p["name"], "none", p["location"], p["phone"], \
+         p["provider"], p["contacts"])
+        usrs.append(usr)
+    return usrs
+
 def getFromDB(phoneNum):
     try:
         response = table.get_item(
@@ -116,6 +126,16 @@ def messageLocal():
             me.sendMessage(other)
             sent += other.name + "\n"
     return sent
+
+@application.route("/api/messageall", methods=['GET', 'POST'])
+def messageAll():
+    phone = request.args.get("myphone")
+    me = getUser(phone)
+    usrs = getUsersFromFile("database.json")
+    for usr in usrs:
+        if usr.phone != me.phone:
+            me.sendMessage(usr)
+    return "ok"
 
 if __name__ == "__main__":
     application.run()
