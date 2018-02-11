@@ -4,15 +4,13 @@ from geopy.distance import vincenty
 import smtplib
 from email.message import EmailMessage
 from message import Message
-from uuid import uuid4
 import json
 
 class User(object):
 
-    def __init__(self, username, name, imgURL,\
+    def __init__(self, name, imgURL,\
      location, phone, provider, contacts,\
      textstr="I need some help"):
-        self.username = username
         self.name = name
         self.imgURL = imgURL
         self.location = location
@@ -20,17 +18,15 @@ class User(object):
         self.textstr = textstr
         self.contacts = contacts # list of Users
         self.provider = provider
-        self.ID = str(uuid4())
 
     def __repr__(self):
-        string = "User: %s" % self.username
+        string = "User: %s" % self.name
         string += "\n\timage: %s" % self.imgURL
         string += "\n\tlocation: (%s, %s)" % (self.location[0], self.location[1])
         string += "\n\tphone: %s" % self.phone
         string += "\n\ttextstr: %s" % self.textstr
         string += "\n\tmessage: %s" % self.message
         string += "\n\temail: %s" % self.email
-        string += "\n\tID: %s" % self.ID
         string += ("\n***\nCONTACTS:\n***\n")
         for c in self.contacts:
             string += str(c)
@@ -61,9 +57,8 @@ class User(object):
     def json(self):
         cs = []
         for c in self.contacts:
-            cs.append(c.ID)
-        usrDict = {"ID": self.ID, \
-         "username": self.username, \
+            cs.append(c.phone)
+        usrDict = {
          "name": self.name, \
          "imgURL": self.imgURL, \
          "location": self.location, \
@@ -81,10 +76,10 @@ class User(object):
 
 
 if __name__ == '__main__':
-    user1 = User("angela1", "Angela", "/none", \
+    user1 = User("Angela", "/none", \
         ("52.509669", "13.376294"), "7135347983",\
          "AT&T", [])
-    user2 = User("choyin2", "cho yin", "/none", \
+    user2 = User("cho yin", "/none", \
         ("51.509669", "13.376294"), "0000000000", \
         "Verizon", [], textstr="pls help")
     user1.addContact(user2)
