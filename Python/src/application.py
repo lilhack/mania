@@ -3,6 +3,7 @@
 from flask import Flask, request
 from user import User
 import boto3
+import os
 import json
 import decimal
 from boto3.dynamodb.conditions import Key, Attr
