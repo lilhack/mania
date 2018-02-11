@@ -8,14 +8,14 @@ dynamodb = boto3.resource('dynamodb',region_name='us-east-2')
 
 
 ID = "Test User"
-phoneNum = 4083355866
+phoneNum = "4083355866"
 
 table = dynamodb.Table('Users')
 response = table.put_item(
    TableName="Users",
    Item={
-        'ID': ID,
         'phoneNum': phoneNum,
+        'ID':ID,
        # 'title': title,
         'info': {
             'plot':"Nothing happens at all.",

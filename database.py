@@ -9,22 +9,14 @@ table = dynamodb.create_table(
     TableName='Users',
     KeySchema=[
         {
-            'AttributeName': 'ID',
-            'KeyType': 'HASH'  #Partition key
-        },
-        {
             'AttributeName': 'phoneNum',
-            'KeyType': 'RANGE'
+            'KeyType': 'HASH'
         }
     ],
     AttributeDefinitions=[
         {
-            'AttributeName': 'ID',
-            'AttributeType': 'S'
-        },
-        {
             'AttributeName': 'phoneNum',
-            'AttributeType': 'N'
+            'AttributeType': 'S'
         }
 
     ],
@@ -38,7 +30,7 @@ table = dynamodb.create_table(
 
 #print("Table status:", table.table_status)
 
-ID = "Test User"
+
 #year = 2015
 
 
