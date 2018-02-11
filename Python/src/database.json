@@ -1,0 +1,26 @@
+[
+  {
+    "phone": "4125678119",
+    "contacts": [
+      "7135347983"
+    ],
+    "location": [
+      "52.509669",
+      "13.376294"
+    ],
+    "provider": "ATT",
+    "imgURL": "/none",
+    "name": "angela"
+  },
+  {
+    "phone": "7135347983",
+    "contacts": [],
+    "location": [
+      "52.509669",
+      "13.376294"
+    ],
+    "provider": "ATT",
+    "imgURL": "/none",
+    "name": "angela"
+  }
+]
