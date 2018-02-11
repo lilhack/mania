@@ -4,5 +4,5 @@ source env/bin/activate
 
 #install requirements
 while read line; do
-	pip install $line
+	pip3 install $line
 done <requirements.txt
