@@ -98,7 +98,7 @@ if __name__ == '__main__':
         ("52.509669", "13.376294"), "7135347983",\
          "AT&T", [])
     user2 = User("cho yin", "/none", \
-        ("51.509669", "13.376294"), "0000000000", \
+        ("51.509669", "13.376294"), "4125678119", \
         "Verizon", [], textstr="pls help")
     user1.addContact(user2)
     print(user1.json)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from flask import Flask, request
 from user import User
 import boto3
@@ -49,8 +48,6 @@ def start():
 def hello():
     name = request.args.get("name")
     return "Hello %s!" % name
-
-
 
 @application.route("/api/messageall", methods=['GET', 'POST'])
 def messageAll():
