@@ -11,6 +11,16 @@ from botocore.exceptions import ClientError
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 table = dynamodb.Table('Users')
 
+def getUsersFromFile(file):
+    with open(file) as f:
+        data = json.load(f)
+    usrs = []
+    for p in data:
+        usr = User(p["name"], "none", p["location"], p["phone"], \
+         p["provider"], p["contacts"])
+        usrs.append(usr)
+    return usrs
+
 def getFromDB(phoneNum):
     try:
         response = table.get_item(
@@ -60,6 +70,8 @@ def hello():
 def printUser():
     phoneNum = request.args.get("phonenum")
     usr = getUser(phoneNum)
+    if usr is None:
+        return "error retreiving user"
     return usr.json
 
 @application.route("/api/register", methods=['GET', 'POST'])
@@ -80,6 +92,8 @@ def register():
 def addContact():
     phoneNum = request.args.get("myphone")
     usr = getUser(phoneNum)
+    if usr is None:
+        return "error adding contact"
     phone = request.args.get("otherphone")
     usr.addContact(phone)
     putToDB(usr) 
@@ -89,8 +103,12 @@ def addContact():
 def messageContacts():
     phone = request.args.get("myphone")
     usr = getUser(phone)
+    if usr is None: 
+        return "error retreiving user"
     for num in usr.contacts:
         contact = getUser(num)
+        if contact is None:
+            return "error retreiving contact"
         if contact:
             usr.sendMessage(contact)
     return "ok"
@@ -105,15 +123,23 @@ def messageLocal():
         ProjectionExpression="phoneNum"
         )
     numsDictList = response["Items"]
-    sent = ""
+    sent = "sent to:\n"
     for numDict in numsDictList:
         otherNum = numDict["phoneNum"]
         other = getUser(otherNum)
-        if other and me.isClose(other) and (other.phone != me.phone):
+        if me.location[0] and me.location[1] and \
+         other and other.location[0] and other.location[1] \
+         and me.isClose(other) and (other.phone != me.phone):
             print(other.email)
             me.sendMessage(other)
             sent += other.name + "\n"
     return sent
+
+@application.route("/api/messageall", methods=['GET', 'POST'])
+def messageAll():
+    usrs = getUsersFromFile("database.json")
+    usrs[0].sendMessage(usrs[1])
+    return "ok"
 
 if __name__ == "__main__":
     application.run()
