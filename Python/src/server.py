@@ -21,6 +21,15 @@ def register():
     usr = User(username, name, imgURL, location, phone,\
         provider, [])
     ## TODO: add (usr.id, usr.json) to database
+    return usr.json
+
+@app.route("/api/addcontact")
+def addContact(myID, otherPhone):
+    ## usr = (TODO: get yourself from database by ID)
+    phone = request.args.get("phone")
+    ## contact = (TODO: get user by contact from database)
+    # usr.addContect(contact)
+    # DATABASE[usr.id] = usr.json 
 
 
 # @app.route("/api/set")
