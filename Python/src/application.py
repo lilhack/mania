@@ -27,10 +27,10 @@ def getFromDB(phoneNum):
 
 def putToDB(user):
     usrJson = {
-        'phoneNum': user.phoneNum,
-        'info': user.json
+        'phoneNum': user.phone,
+        'Item': user.json
     }
-    response = table.put_item(usrJson)
+    response = table.put_item(Item=usrJson)
 
 application = Flask(__name__)
 
@@ -39,11 +39,24 @@ def hello():
     name = request.args.get("name")
     return "Hello %s!" % name
 
+def getUser(phoneNum):
+    usrDict = json.loads(getFromDB(phoneNum)["Item"])
+    name = usrDict["name"]
+    imgURL = usrDict["imgURL"]
+    location = usrDict["location"]
+    phone = usrDict["phone"]
+    provider = usrDict["provider"]
+    contacts = usrDict["contacts"]
+    usr = User(name, imgURL, location, phone, provider, contacts)
+    return usr
+# name, imgURL,\
+#      location, phone, provider, contacts,\
+
 @application.route("/api/getuser")
-def getUser():
+def printUser():
     phoneNum = request.args.get("phonenum")
-    usr = getFromDB(phoneNum)
-    return json.dumps(usr, indent=4)
+    usr = getUser(phoneNum)
+    return usr.json
 
 @application.route("/api/register")
 def register():
@@ -58,12 +71,13 @@ def register():
     return usr.json
 
 @application.route("/api/addcontact")
-def addContact(myID, otherPhone):
-    ## usr = (TODO: get yourself from database by ID)
-    phone = request.args.get("phone")
-    ## contact = (TODO: get user by contact from database)
-    # usr.addContect(contact)
-    # DATABASE[usr.id] = usr.json 
+def addContact():
+    phoneNum = request.args.get("myphone")
+    usr = getUser(phoneNum)
+    phone = request.args.get("otherphone")
+    usr.addContact(phone)
+    putToDB(usr) 
+    return usr.json
 
 if __name__ == "__main__":
     application.run()

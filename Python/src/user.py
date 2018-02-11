@@ -29,7 +29,7 @@ class User(object):
         string += "\n\temail: %s" % self.email
         string += ("\n***\nCONTACTS:\n***\n")
         for c in self.contacts:
-            string += str(c)
+            string += "\t\t%s\n" % c
         return string
 
     @property
@@ -57,7 +57,7 @@ class User(object):
     def json(self):
         cs = []
         for c in self.contacts:
-            cs.append(c.phone)
+            cs.append(c)
         usrDict = {
          "name": self.name, \
          "imgURL": self.imgURL, \
@@ -70,9 +70,9 @@ class User(object):
     def getDistance(self, other):
         return vincenty(self.location, other.location)
 
-    
-    def addContact(self, contact):
-        self.contacts.append(contact)
+    def addContact(self, phone):
+        if phone not in self.contacts:
+            self.contacts.append(phone)
 
 
 if __name__ == '__main__':
