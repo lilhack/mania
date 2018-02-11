@@ -89,8 +89,6 @@ class User(object):
             self.contacts.append(phone)
 
     def isClose(self, other):
-        print(self)
-        print(other)
         return abs(float(self.location[0]) - float(other.location[0])) < .001 \
          and abs(float(self.location[1]) - float(other.location[1])) < .001
 

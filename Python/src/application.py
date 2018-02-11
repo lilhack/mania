@@ -29,7 +29,7 @@ def getFromDB(phoneNum):
 
 def getUser(phoneNum):
     dbResponse = getFromDB(phoneNum)
-    if dbResponse is None:
+    if dbResponse is None or "Item" not in dbResponse:
         return None
     usrDict = json.loads(dbResponse["Item"])
     name = usrDict["name"]
@@ -97,22 +97,25 @@ def messageContacts():
             usr.sendMessage(contact)
     return "ok"
 
-# @application.route("/api/messagelocal")
-# def messageLocal():
-#     phone = request.args.get("myphone")
-#     me = getUser(phone)
-#     if not me:
-#         return "error: myphone not valid"
-#     response = table.scan(
-#         ProjectionExpression="phoneNum"
-#         )
-#     numsDictList = response["Items"]
-#     for numDict in numsDictList:
-#         otherNum = numDict["phoneNum"]
-#         other = getUser(otherNum)
-#         if me.isClose(other):
-#             me.sendMessage(other)
-#     return "ok"
+@application.route("/api/messagelocal")
+def messageLocal():
+    phone = request.args.get("myphone")
+    me = getUser(phone)
+    if not me:
+        return "error: myphone not valid"
+    response = table.scan(
+        ProjectionExpression="phoneNum"
+        )
+    numsDictList = response["Items"]
+    sent = ""
+    for numDict in numsDictList:
+        otherNum = numDict["phoneNum"]
+        other = getUser(otherNum)
+        if other and me.isClose(other) and (other.phone != me.phone):
+            print(other.email)
+            me.sendMessage(other)
+            sent += other.name + "\n"
+    return sent
 
 if __name__ == "__main__":
     application.run()
