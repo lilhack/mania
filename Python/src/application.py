@@ -8,8 +8,8 @@ import os
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
-access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+access_key = os.environ.get('AKIAJ3FSEU3TBF7IYYDA')
+secret_key = os.environ.get('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')
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 table = dynamodb.Table('Users')
