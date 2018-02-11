@@ -4,8 +4,12 @@ from user import User
 import boto3
 import json
 import decimal
+import os
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
+
+access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 table = dynamodb.Table('Users')
