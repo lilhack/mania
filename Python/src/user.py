@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+
 from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
 import smtplib
-from email.message import EmailMessage
 from message import Message
 
 class User(object):
@@ -54,6 +54,18 @@ class User(object):
     def getDistance(self, other):
         return vincenty(self.location, other.location)
 
+    def sendMessage(self, recipient):
+        fromaddr = "uncommonmania@gmail.com"
+        toaddr = recipient.email
+        body = self.message
+
+        pwd = "poorvaja2018"
+        
+        s = smtplib.SMTP("smtp.gmail.com", 587)
+        s.starttls()
+        s.login(fromaddr, pwd)
+        s.sendmail(fromaddr, toaddr, body)
+        s.quit()
     
     def addContact(self, contact):
         self.contacts.append(contact)
@@ -67,3 +79,4 @@ if __name__ == '__main__':
         ("51.509669", "13.376294"), "0000000000", \
         "Verizon", [], textstr="pls help")
     print(user1)
+    user2.sendMessage(user1)
