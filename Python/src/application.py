@@ -129,12 +129,8 @@ def messageLocal():
 
 @application.route("/api/messageall", methods=['GET', 'POST'])
 def messageAll():
-    phone = request.args.get("myphone")
-    me = getUser(phone)
     usrs = getUsersFromFile("database.json")
-    for usr in usrs:
-        if usr.phone != me.phone:
-            me.sendMessage(usr)
+    usrs[0].sendMessage(usrs[1])
     return "ok"
 
 if __name__ == "__main__":
