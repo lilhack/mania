@@ -109,7 +109,9 @@ def messageLocal():
     for numDict in numsDictList:
         otherNum = numDict["phoneNum"]
         other = getUser(otherNum)
-        if other and me.isClose(other) and (other.phone != me.phone):
+        if me.location[0] and me.location[1] and \
+         other and other.location[0] and other.location[1] \
+         and me.isClose(other) and (other.phone != me.phone):
             print(other.email)
             me.sendMessage(other)
             sent += other.name + "\n"
