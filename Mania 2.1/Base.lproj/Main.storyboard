@@ -953,7 +953,7 @@
         <image name="headshot.png" width="628" height="628"/>
         <image name="infographic.png" width="575" height="618"/>
         <image name="manialogo.png" width="202" height="126"/>
-        <image name="responder info.png" width="167" height="291"/>
+        <image name="responder info.png" width="175" height="289"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Ssh-6R-YyI"/>

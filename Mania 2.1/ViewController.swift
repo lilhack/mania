@@ -20,15 +20,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func sendRequest() {
         
     }
+    
+    var formDict: [String:String] = ["name":"", "phone":"", "provider":""]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("hi")
-        let base: String = "http://127.0.0.1:5000"
-        let route: String = "/api/hello"
-        let params: [[String]] = [["name","sylvia"]]
-        let url: String = buildURL(base: base, route: route, params: params)
-        print(url)
-        Mania_2_1.sendRequest(url: "http://127.0.0.1:5000/api/hello?name=sylvia")
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -38,28 +34,32 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     @IBAction func saveName(_ sender: Any) {
-        UserDefaults.standard.set(textName.text, forKey: "savedName")
-        UserDefaults.standard.synchronize()
+        formDict["name"] = textName.text
+        if formIsFilled(form: formDict) {
+            self.register()
+        }
     }
     
     @IBAction func savePhone(_ sender: Any) {
-        UserDefaults.standard.set(textPhone.text, forKey: "savedPhone")
-       UserDefaults.standard.synchronize()
+        formDict["phone"] = textPhone.text
+        if formIsFilled(form: formDict) {
+            self.register()
+        }
     }
     
     @IBAction func saveEmail(_ sender: Any) {
-         UserDefaults.standard.set(textEmail.text, forKey: "savedEmail")
-             UserDefaults.standard.synchronize()
+
     }
     
     @IBAction func saveProvider(_ sender: Any) {
-         UserDefaults.standard.set(textProvider.text, forKey: "savedProvider")
-             UserDefaults.standard.synchronize()
+        formDict["provider"] = textProvider.text
+        if formIsFilled(form: formDict) {
+            self.register()
+        }
     }
     
     @IBAction func saveEC1Phone(_ sender: Any) {
         UserDefaults.standard.set(EC1Phone.text, forKey: "savedEC1Phone")
-             UserDefaults.standard.synchronize()
     }
 
     @IBOutlet weak var myImageView: UIImageView!
@@ -97,13 +97,35 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         self.dismiss(animated: true, completion: nil)
     }
+    
+    func register() {
+        self.formDict["imgURL"] = "None"
+        self.formDict["lat"] = "0"
+        self.formDict["lon"] = "0"
+        let base: String = "http://127.0.0.1:8000"
+        let route: String = "/api/register"
+        let url: String = buildURL(base: base, route: route, params: self.formDict)
+        Mania_2_1.sendRequest(url: url)
+    }
+    
 }
 
-func buildURL(base: String, route: String, params: [[String]]) -> String {
+func formIsFilled(form: [String: String]) -> Bool {
+    for x in form {
+        if x.value == "" {
+            return false
+        }
+    }
+    return true
+}
+
+
+
+func buildURL(base: String, route: String, params: [String:String]) -> String {
     var ret: String
     ret = base + route + "?"
     for param in params {
-        ret += param[0] + "=" + param[1] + "&"
+        ret += param.key + "=" + param.value + "&"
     }
     return ret
 }
