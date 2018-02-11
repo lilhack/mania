@@ -50,21 +50,19 @@ def putToDB(user):
 
 application = Flask(__name__)
 
-@application.route("/api/hello")
+@application.route("/api/hello", methods=['GET', 'POST'])
 def hello():
     name = request.args.get("name")
     return "Hello %s!" % name
 
-# name, imgURL,\
-#      location, phone, provider, contacts,\
 
-@application.route("/api/getuser")
+@application.route("/api/getuser", methods=['GET', 'POST'])
 def printUser():
     phoneNum = request.args.get("phonenum")
     usr = getUser(phoneNum)
     return usr.json
 
-@application.route("/api/register")
+@application.route("/api/register", methods=['GET', 'POST'])
 def register():
     name = request.args.get("name")
     imgURL = request.args.get("imgURL")
@@ -78,7 +76,7 @@ def register():
     putToDB(usr)
     return usr.json
 
-@application.route("/api/addcontact")
+@application.route("/api/addcontact", methods=['GET', 'POST'])
 def addContact():
     phoneNum = request.args.get("myphone")
     usr = getUser(phoneNum)
@@ -87,7 +85,7 @@ def addContact():
     putToDB(usr) 
     return usr.json
 
-@application.route("/api/messagecontacts")
+@application.route("/api/messagecontacts", methods=['GET', 'POST'])
 def messageContacts():
     phone = request.args.get("myphone")
     usr = getUser(phone)
@@ -97,7 +95,7 @@ def messageContacts():
             usr.sendMessage(contact)
     return "ok"
 
-@application.route("/api/messagelocal")
+@application.route("/api/messagelocal", methods=['GET', 'POST'])
 def messageLocal():
     phone = request.args.get("myphone")
     me = getUser(phone)
