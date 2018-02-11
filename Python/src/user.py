@@ -37,7 +37,7 @@ class User(object):
         if self.provider == "ATT":
             return self.phone + "@mms.att.net"
         elif self.provider == "Verizon":
-            pass
+            return self.phone + "@vtext.com"
             # TODO
         return None
 
@@ -80,12 +80,19 @@ class User(object):
         s = smtplib.SMTP("smtp.gmail.com", 587)
         s.starttls()
         s.login(fromaddr, pwd)
+        print(body)
         s.sendmail(fromaddr, toaddr, body)
         s.quit()
     
     def addContact(self, phone):
         if phone not in self.contacts:
             self.contacts.append(phone)
+
+    def isClose(self, other):
+        print(self)
+        print(other)
+        return abs(float(self.location[0]) - float(other.location[0])) < .001 \
+         and abs(float(self.location[1]) - float(other.location[1])) < .001
 
 
 if __name__ == '__main__':

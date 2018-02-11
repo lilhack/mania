@@ -22,8 +22,24 @@ def getFromDB(phoneNum):
         print(e.response['Error']['Message'])
         return None
     else:
-        usr = response['Item']
-        return usr
+        if "Item" in response:
+            usr = response['Item']
+            return usr
+        return None
+
+def getUser(phoneNum):
+    dbResponse = getFromDB(phoneNum)
+    if dbResponse is None:
+        return None
+    usrDict = json.loads(dbResponse["Item"])
+    name = usrDict["name"]
+    imgURL = usrDict["imgURL"]
+    location = usrDict["location"]
+    phone = usrDict["phone"]
+    provider = usrDict["provider"]
+    contacts = usrDict["contacts"]
+    usr = User(name, imgURL, location, phone, provider, contacts)
+    return usr
 
 def putToDB(user):
     usrJson = {
@@ -39,16 +55,6 @@ def hello():
     name = request.args.get("name")
     return "Hello %s!" % name
 
-def getUser(phoneNum):
-    usrDict = json.loads(getFromDB(phoneNum)["Item"])
-    name = usrDict["name"]
-    imgURL = usrDict["imgURL"]
-    location = usrDict["location"]
-    phone = usrDict["phone"]
-    provider = usrDict["provider"]
-    contacts = usrDict["contacts"]
-    usr = User(name, imgURL, location, phone, provider, contacts)
-    return usr
 # name, imgURL,\
 #      location, phone, provider, contacts,\
 
@@ -62,7 +68,9 @@ def printUser():
 def register():
     name = request.args.get("name")
     imgURL = request.args.get("imgURL")
-    location = request.args.get("location")
+    lon = request.args.get("lon")
+    lat = request.args.get("lat")
+    location = (lat, lon)
     phone = request.args.get("phone")
     provider = request.args.get("provider")
     usr = User(name, imgURL, location, phone,\
@@ -78,6 +86,33 @@ def addContact():
     usr.addContact(phone)
     putToDB(usr) 
     return usr.json
+
+@application.route("/api/messagecontacts")
+def messageContacts():
+    phone = request.args.get("myphone")
+    usr = getUser(phone)
+    for num in usr.contacts:
+        contact = getUser(num)
+        if contact:
+            usr.sendMessage(contact)
+    return "ok"
+
+# @application.route("/api/messagelocal")
+# def messageLocal():
+#     phone = request.args.get("myphone")
+#     me = getUser(phone)
+#     if not me:
+#         return "error: myphone not valid"
+#     response = table.scan(
+#         ProjectionExpression="phoneNum"
+#         )
+#     numsDictList = response["Items"]
+#     for numDict in numsDictList:
+#         otherNum = numDict["phoneNum"]
+#         other = getUser(otherNum)
+#         if me.isClose(other):
+#             me.sendMessage(other)
+#     return "ok"
 
 if __name__ == "__main__":
     application.run()
