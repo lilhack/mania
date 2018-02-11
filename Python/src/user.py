@@ -4,11 +4,13 @@ from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
 import smtplib
 from message import Message
+import json
 
 class User(object):
 
-    def __init__(self, username, name, imgURL, location, phone, provider, contacts, textstr="I need some help"):
-        self.username = username
+    def __init__(self, name, imgURL,\
+     location, phone, provider, contacts,\
+     textstr="I need some help"):
         self.name = name
         self.imgURL = imgURL
         self.location = location
@@ -18,7 +20,7 @@ class User(object):
         self.provider = provider
 
     def __repr__(self):
-        string = "User: %s" % self.username
+        string = "User: %s" % self.name
         string += "\n\timage: %s" % self.imgURL
         string += "\n\tlocation: (%s, %s)" % (self.location[0], self.location[1])
         string += "\n\tphone: %s" % self.phone
@@ -27,12 +29,12 @@ class User(object):
         string += "\n\temail: %s" % self.email
         string += ("\n***\nCONTACTS:\n***\n")
         for c in self.contacts:
-            string += str(c)
+            string += "\t\t%s\n" % c
         return string
 
     @property
     def email(self):
-        if self.provider == "AT&T":
+        if self.provider == "ATT":
             return self.phone + "@mms.att.net"
         elif self.provider == "Verizon":
             pass
@@ -51,6 +53,20 @@ class User(object):
         location = geolocator.reverse(self.location)
         return location.address
 
+    @property
+    def json(self):
+        cs = []
+        for c in self.contacts:
+            cs.append(c)
+        usrDict = {
+         "name": self.name, \
+         "imgURL": self.imgURL, \
+         "location": self.location, \
+         "phone": self.phone, \
+         "provider": self.provider, \
+         "contacts": cs}
+        return json.dumps(usrDict)
+
     def getDistance(self, other):
         return vincenty(self.location, other.location)
 
@@ -67,16 +83,17 @@ class User(object):
         s.sendmail(fromaddr, toaddr, body)
         s.quit()
     
-    def addContact(self, contact):
-        self.contacts.append(contact)
+    def addContact(self, phone):
+        if phone not in self.contacts:
+            self.contacts.append(phone)
 
 
 if __name__ == '__main__':
-    user1 = User("angela1", "Angela", "/none", \
+    user1 = User("Angela", "/none", \
         ("52.509669", "13.376294"), "7135347983",\
          "AT&T", [])
-    user2 = User("choyin2", "cho yin", "/none", \
+    user2 = User("cho yin", "/none", \
         ("51.509669", "13.376294"), "0000000000", \
         "Verizon", [], textstr="pls help")
-    print(user1)
-    user2.sendMessage(user1)
+    user1.addContact(user2)
+    print(user1.json)
